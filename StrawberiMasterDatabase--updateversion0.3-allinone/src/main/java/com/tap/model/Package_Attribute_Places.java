@@ -4,6 +4,17 @@ public class Package_Attribute_Places {
 	private String place = null;
 	private String number_of_days = null;
 	private String number_of_nights = null;
+	private String sequence_number = null;
+	
+	
+	
+	public String getSequence_number() {
+		return sequence_number;
+	}
+
+	public void setSequence_number(String sequence_number) {
+		this.sequence_number = sequence_number;
+	}
 
 	public String getPlace() {
 		return place;

@@ -12,9 +12,12 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import javax.ws.rs.client.Client;
@@ -68,7 +71,7 @@ public class RestClient {
 	private static final String PRODUCT_BUNDLE_URL = "http://betaerp.edawjar.in:8000/api/resource/Product Bundle";
 	private static final String Hotel_ATTRIBUTES_URL = "http://betaerp.edawjar.in:8000/api/resource/Hotel Attribute";
 	private static final String PRODUCT_BUNDLE_ATTRIBUTE_URL = "http://betaerp.edawjar.in:8000/api/resource/Product Bundle Attribute";
-	private static final String PACKAGE_PRODUCT_ALTERNATIVES_URL = null;
+	private static final String PACKAGE_PRODUCT_ALTERNATIVES_URL = "http://betaerp.edawjar.in:8000/api/resource/Package Product Alternatives";
 	private static final String LAND_PACKAGE_ATTRIBUTES_URL = "http://betaerp.edawjar.in:8000/api/resource/Land Package Attributes";
 	private static final String PRICE_LIST_URL = "http://betaerp.edawjar.in:8000/api/resource/Price List";
 	private static final String SIGHT_SEEING_ATTRIBUTE_URL = null;
@@ -238,16 +241,15 @@ public class RestClient {
 	}
 
 	public static void main(String args[]) throws JSONException, Exception {
-//		setItem();
-//		setAttraction();
+		//setItem();
+		//setAttraction();
 		//setTemplate_hotel();
-		//setTemplate_variant();
-		//setPrice_list_dummy();
-		//setItem_price_list();
-		setProduct_bundle_dummy();
-		setProductBundleAttributes();
-		setLandPackageAttributes();
-
+		setTemplate_variants();
+		setPrice_list_dummy();
+//		setItem_price_list();
+		//setProduct_bundle_dummy();
+		//setProductBundleAttributes();
+		//setLandPackageAttributes();
 	}
 
 	private static void setItem_price_list() {
@@ -262,13 +264,15 @@ public class RestClient {
 
 			stmt = conn.createStatement();
 			String sql = "SELECT distinct package_id from fit_package_catalog_variants_price";
-//			String idd="FIT-Maharashtra-001";
+//			String idd="FIT-Singapore-0015";
 //			String sql = "SELECT distinct package_id from fit_package_catalog_variants_price where package_id='"+idd+"'";
 
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				String package_id = rs.getString("package_id");
 				setItem_price_list_main(package_id);
+			
+			
 			}
 			rs.close();
 		} catch (SQLException se) {
@@ -307,9 +311,9 @@ public class RestClient {
 			while (rs.next()) {
 				System.out.println("--------------------------------------------------------PRICE PACKAGE " + i
 						+ " IS STARTED--------------------------------------------------------\n");
-				price.setItem_code(rs.getString("package_id") + " PACKAGE");
+				price.setItem_code(rs.getString("package_id"));
 				System.out.println("item_code : " + price.getItem_code() + "\n");
-				price.setItem_name(rs.getString("package_id") + " PACKAGE");
+				price.setItem_name(rs.getString("package_id"));
 				System.out.println("item_code : " + price.getItem_name() + "\n");
 
 				price.setCurrency(rs.getString("currency_1"));
@@ -480,7 +484,7 @@ public class RestClient {
 
 				String hotel_name = rs.getString("hotel_name");
 
-				setTemplate_variants(hotel_name);
+				// setTemplate_variants(hotel_name);
 
 				System.out.println("--------------------------------------------------------PACKAGE " + i
 						+ " IS ENDED--------------------------------------------------------\n");
@@ -508,18 +512,18 @@ public class RestClient {
 		}
 	}
 
-	private static void setTemplate_variants(String hotel_name) {
+	private static void setTemplate_variants() {
 		Connection conn = null;
 		Statement stmt = null;
 		RestClient rc = new RestClient();
-
+		String hotel_name = null;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-
+			//String hid = "Summer Sand";
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/fitjsontodb", "root", "tiger");
 			stmt = conn.createStatement();
 			// for normal names
-			String sql = "SELECT * from fit_hotels where hotel_name='" + hotel_name + "'";
+			String sql = "SELECT * from fit_hotels";
 			// for unformated name ex. ex'ian hotel
 			// String sql = "SELECT * from fit_hotels where no=89";
 			// otherwise use query select * from fit_hotels;
@@ -529,7 +533,7 @@ public class RestClient {
 				Item2 hotelattr = new Item2();
 				System.out.println("--------------------------------------------------------PACKAGE " + i
 						+ " IS STARTED--------------------------------------------------------\n");
-
+				hotel_name = rs.getString("hotel_name");
 				hotelattr.setItem_code(rs.getString("hotel_id"));
 				System.out.println("Item_code---" + hotelattr.getItem_code());
 				hotelattr.setItem_name(rs.getString("hotel_id") + " - " + rs.getString("variant_name"));
@@ -791,7 +795,7 @@ public class RestClient {
 
 			stmt = conn.createStatement();
 			String sql = "SELECT distinct package_id from fit_package_catalog_variants_price";
-//			String pid="FIT-Maharashtra-001";
+//			String pid="FIT-Singapore-0015";
 //			String sql = "SELECT distinct package_id from fit_package_catalog_variants_price where package_id='"+pid+"'";
 
 			ResultSet rs = stmt.executeQuery(sql);
@@ -1015,7 +1019,7 @@ public class RestClient {
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/fitjsontodb", "root", "tiger");
 
 			stmt = conn.createStatement();
-//			 String p = "FIT-China-001";
+			 //String p = "FIT-Singapore-0015";
 
 			String sql = "select count(variants.package_id)as num,basic.item_code,basic.item_name,basic.description,basic.flights,basic.visa,basic.hotels,basic.sightseeing from fit_package_catalog_variants_price variants,fit_package_catalog_basic basic where basic.item_code=variants.package_id group by package_id";
 //			String sql = "select count(variants.package_id)as num,basic.item_code,basic.item_name,basic.description,basic.flights,basic.visa,basic.hotels,basic.sightseeing from fit_package_catalog_variants_price variants,fit_package_catalog_basic basic where variants.package_id='"
@@ -1139,7 +1143,7 @@ public class RestClient {
 						+ " DATA IN ERPNEXT SETUP IS STARTED--------------------------------------------------------\n");
 
 				Response r = rc.createItemjson(new Item2(attributes.getItem_code() + " PACKAGE",
-						attributes.getItem_name(), attributes.getStock_uom(), attributes.getItem_group(),
+						attributes.getItem_name()+ " PACKAGE", attributes.getStock_uom(), attributes.getItem_group(),
 						attributes.getCategory(), true, true, item_default));
 				System.out.println("Status---" + r.getStatus());
 				System.out.println("Status Info---" + r.getStatusInfo());
@@ -1152,7 +1156,7 @@ public class RestClient {
 				System.out.println("--------------------------------------------------------INSERTING PACKAGE" + i
 						+ " Parent Item DATA IN ERPNEXT SETUP IS STARTED--------------------------------------------------------\n");
 				Response r1 = rc.createItemjson(new Item2(attributes.getItem_code(),
-						attributes.getItem_name() + " PACKAGE", attributes.getStock_uom(), attributes.getItem_group(),
+						attributes.getItem_name(), attributes.getStock_uom(), attributes.getItem_group(),
 						attributes.getCategory(), false, false, item_default));
 				System.out.println("Status---" + r1.getStatus());
 				System.out.println("Status Info---" + r1.getStatusInfo());
@@ -1420,91 +1424,68 @@ public class RestClient {
 
 				}
 
-				if (found == true) {
-					Bundle_Itinerary itinerary = new Bundle_Itinerary();
-					itinerary.setDay(rs2.getString("day"));
-					System.out.println("day: " + itinerary.getDay() + "\n");
-					itinerary.setSequence_number(rs2.getString("sequence"));
-					System.out.println("sequence number: " + itinerary.getSequence_number() + "\n");
-					itinerary.setTitle(rs2.getString("title"));
-					System.out.println("title: " + itinerary.getTitle() + "\n");
-					itinerary.setPlace(rs2.getString("place"));
-					System.out.println("place: " + itinerary.getPlace() + "\n");
+				Bundle_Itinerary itinerary = new Bundle_Itinerary();
+				itinerary.setDay(rs2.getString("day"));
+				System.out.println("day: " + itinerary.getDay() + "\n");
+				itinerary.setSequence_number(rs2.getString("sequence"));
+				System.out.println("sequence number: " + itinerary.getSequence_number() + "\n");
+				itinerary.setTitle(rs2.getString("title"));
+				System.out.println("title: " + itinerary.getTitle() + "\n");
+				itinerary.setPlace(rs2.getString("place"));
+				System.out.println("place: " + itinerary.getPlace() + "\n");
 
-					if (rs2.getString("category").equalsIgnoreCase("Attraction")) {
-						itinerary.setCategory("Sightseeing");
-						System.out.println("category: " + itinerary.getCategory() + "\n");
+				if (rs2.getString("category").equalsIgnoreCase("Attraction")) {
+					itinerary.setCategory("Sightseeing");
+					System.out.println("category: " + itinerary.getCategory() + "\n");
 
-//						if (rs2.getString("product").equalsIgnoreCase("NA")
-//								|| rs2.getString("product").equalsIgnoreCase("")) {
-//							itinerary.setProduct("");
-//						} else if (rs2.getString("product") != "NA" || rs2.getString("product") != "") {
-//
-//							found = checkProductAttraction(rs2.getString("product"));
-//							if (found == true) {
+					if (found == true) {
 						itinerary.setProduct(rs2.getString("product"));
 						System.out.println("product: " + itinerary.getProduct() + "\n");
-//							} else if (found == false) {
-//								itinerary.setProduct("");
-//							}
-//						}
-
-					} else if (rs2.getString("category").equalsIgnoreCase("Transfer")) {
-						itinerary.setCategory("Airport Transfer");
-						System.out.println("category: " + itinerary.getCategory() + "\n");
-
-						itinerary.setProduct(rs2.getString("product") + "-" + var);
-						itm_arr = rs2.getString("product") + "-" + var;
-						System.out.println("product: " + itinerary.getProduct() + "\n");
-//						if (rs2.getString("product").equalsIgnoreCase("NA")
-//								|| rs2.getString("product").equalsIgnoreCase("")) {
-//							itinerary.setProduct("");
-//						}
-//
-//						else if (rs2.getString("product") != "NA" || rs2.getString("product") != "") {
-//							String var = setTransport_dummy(rs2.getString("product"));
-//
-//							if (var != null) {
-//								found = true;
-
-//							}
-//
-//							else if (var == null) {
-//								found = false;
-//								itinerary.setProduct("");
-//							}
-//						}
+					} else if (found == false) {
+						itinerary.setProduct("");
 					}
 
-					else if (rs2.getString("category").equalsIgnoreCase("Hotel")) {
-						itinerary.setCategory("Hotel");
-						System.out.println("category: " + itinerary.getCategory() + "\n");
-//						if (rs2.getString("product").equalsIgnoreCase("NA")
-//								|| rs2.getString("product").equalsIgnoreCase("")) {
-//							itinerary.setProduct("");
-//						} else if (rs2.getString("product") != "NA" || rs2.getString("product") != "") {
-//
-//							found = checkProducthotels(rs2.getString("product"));
-//							if (found == true) {
+				} else if (rs2.getString("category").equalsIgnoreCase("Transfer")) {
+					itinerary.setCategory("Airport Transfer");
+					System.out.println("category: " + itinerary.getCategory() + "\n");
+
+					if (found == true) {
+//						itinerary.setProduct(rs2.getString("product") + "-" + var);
+//						itm_arr = rs2.getString("product") + "-" + var;
+						itinerary.setProduct(rs2.getString("product"));
+						itm_arr = rs2.getString("product");
+						System.out.println("product: " + itinerary.getProduct() + "\n");
+					} else if (found == false) {
+						itinerary.setProduct("");
+					}
+				}
+
+				else if (rs2.getString("category").equalsIgnoreCase("Hotel")) {
+					itinerary.setCategory("Hotel");
+					System.out.println("category: " + itinerary.getCategory() + "\n");
+					if (found == true) {
 						String[] sep = null;
 						sep = rs2.getString("product").split("[-]");
 						itinerary.setProduct(sep[0]);
 						System.out.println("product: " + itinerary.getProduct() + "\n");
-//							} else if (found == false) {
-//								itinerary.setProduct("");
-//							}
-//
-//						}
+					} else if (found == false) {
+						itinerary.setProduct("");
 					}
+				} else if (rs2.getString("category").equalsIgnoreCase("")
+						|| rs2.getString("category").equalsIgnoreCase("NA")) {
+					itinerary.setCategory("");
+					System.out.println("category: " + itinerary.getCategory() + "\n");
+					itinerary.setProduct("");
+				}
+				itinerary.setDescription(rs2.getString("description"));
+				System.out.println("description: " + itinerary.getDescription() + "\n");
 
-					itinerary.setDescription(rs2.getString("description"));
-					System.out.println("description: " + itinerary.getDescription() + "\n");
+				System.out.println("--------------------------------------------------------ITINERARY ARRAY " + m2
+						+ " IS ENDED--------------------------------------------------------\n");
 
-					System.out.println("--------------------------------------------------------ITINERARY ARRAY " + m2
-							+ " IS ENDED--------------------------------------------------------\n");
+				attributes.Allitinerary(itinerary);
 
-					attributes.Allitinerary(itinerary);
-
+				if (found == true) {
 					System.out.println("--------------------------------------------------------ITEMS ARRAY " + m2
 							+ " IS STARTED--------------------------------------------------------\n");
 
@@ -1717,11 +1698,12 @@ public class RestClient {
 			stmt3 = conn.createStatement();
 			System.out.println("checkinfg Variantssssssss-------itemcode----" + product + "\n");
 			// String cat="Transfer";
-			String sql22 = "SELECT variant_name FROM fit_transfer_service where Transfer_service_id ='" + product + "'";
+			String sql22 = "SELECT Transfer_service_id FROM fit_transfer_service where Transfer_service_id ='" + product + "'";
 			ResultSet rs22 = stmt3.executeQuery(sql22);
 
 			if (rs22.next() == true) {
-				var = rs22.getString("variant_name");
+				//var = rs22.getString("variant_name");
+				var = rs22.getString("Transfer_service_id");
 				System.out.println("checkinfg Variantssssssss-----------\n");
 				// itinerary.setProduct(item_code+"-"+rs22.getString("variant_name"));
 				// System.out.println("product: " + itinerary.getProduct() + "\n");
@@ -1761,7 +1743,7 @@ public class RestClient {
 			conn = DBUtility.getConnection();
 			stmt = conn.createStatement();
 			String sql = "select * from fit_package_catalog_basic";
-//			String codei = "FIT-China-001";
+//			String codei = "FIT-Singapore-0015";
 //			String sql = "select * from fit_package_catalog_basic where item_code='" + codei + "'";
 			rs = stmt.executeQuery(sql);
 			int i = 1;
@@ -1817,6 +1799,9 @@ public class RestClient {
 
 				pba.setDefault_selling_price(rs.getString("default_selling_price"));
 				System.out.println("default_selling_price : " + pba.getDefault_selling_price());
+				
+				pba.setPrice_description(rs.getString("price_description"));
+				System.out.println("price_description : " + pba.getPrice_description());
 
 				JSONObject job = new JSONObject(pba);
 				System.out.println("jsob--> " + job);
@@ -1853,7 +1838,7 @@ public class RestClient {
 			JSONObject job = null;
 
 			String sql = "select * from fit_package_catalog_basic";
-//	            String itmc="FIT-China-001";
+//	            String itmc="FIT-Gujarat-001";
 //	            String sql = "select * from fit_package_catalog_basic where item_code='"+itmc+"'";
 
 			System.out.println("fit_package_catalog_basic----->" + sql);
@@ -1924,12 +1909,14 @@ public class RestClient {
 						Package_Attribute_Places pap = new Package_Attribute_Places();
 						System.out.println("package_id          -----> " + rs1.getString("package_id"));
 						System.out.println("place_name          -----> " + rs1.getString("place_name"));
+						System.out.println("sequence_no          -----> " + rs1.getString("sequence_no"));
 						System.out.println("number_of_days      -----> " + rs1.getString("number_of_days"));
 						System.out.println("number_of_nights    -----> " + rs1.getString("number_of_nights"));
 						System.out.println("latitude            -----> " + rs1.getString("latitude"));
 						System.out.println("longitude           -----> " + rs1.getString("longitude"));
 						System.out.println("zipcode             -----> " + rs1.getString("zipcode"));
 						System.out.println("");
+						pap.setSequence_number(rs1.getString("sequence_no"));
 						pap.setPlace(rs1.getString("place_name"));
 						pap.setNumber_of_days(rs1.getString("number_of_days"));
 						pap.setNumber_of_nights(rs1.getString("number_of_nights"));

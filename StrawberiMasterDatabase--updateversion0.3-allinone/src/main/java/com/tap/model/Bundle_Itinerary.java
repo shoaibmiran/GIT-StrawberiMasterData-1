@@ -4,6 +4,7 @@ public class Bundle_Itinerary {
 
 	private String day = null;
 	private String date = null;
+	private String end_date = null;
 	private String category = null;
 	private String place = null;
 	private String product = null;
@@ -12,6 +13,14 @@ public class Bundle_Itinerary {
 	private String sequence_number = null;
 	
 	
+	public String getEnd_date() {
+		return end_date;
+	}
+
+	public void setEnd_date(String end_date) {
+		this.end_date = end_date;
+	}
+
 	public String getSequence_number() {
 		return sequence_number;
 	}

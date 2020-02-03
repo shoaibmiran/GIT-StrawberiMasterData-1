@@ -41,6 +41,7 @@ public class Airport_Transefer_Rest_Client {
 			conn =DBUtility.getConnection();
 			stmt=conn.createStatement();
 			String sql="select Transfer_service_id from fit_transfer_service";
+			//String sql="select distinct Transfer_service_id from fit_transfer_service";
 			//System.out.println("SQL ------>" +sql);
 			
 			rs=stmt.executeQuery(sql);
@@ -218,7 +219,6 @@ public class Airport_Transefer_Rest_Client {
 //             {
              airport_transfer.setItem_code(rs.getString("Transfer_service_id")+"-"+rs.getString("variant_name"));
              airport_transfer.setItem_name(rs.getString("Transfer_service_id")+"-"+rs.getString("variant_name"));
-             
              airport_transfer.setItem_group("Transport");
              airport_transfer.setStock_uom("Nos");
              airport_transfer.setCategory("Airport Transfer");
