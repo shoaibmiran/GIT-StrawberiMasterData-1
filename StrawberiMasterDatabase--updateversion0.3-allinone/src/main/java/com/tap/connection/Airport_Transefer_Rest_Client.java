@@ -17,17 +17,6 @@ import com.tap.model.Item_Defaults;
 import com.tap.model.Item_Hasattributes;
 
 public class Airport_Transefer_Rest_Client {
-	private static final String REST_URI = "http://betaerp.edawjar.in:8000/api/resource/Item";
-	private static final String ITEM_URL ="http://betaerp.edawjar.in:8000/api/resource/Item";
-	private static final String PRODUCT_BUNDLE_URL = "http://betaerp.edawjar.in:8000/api/resource/Product Bundle";
-	private static final String Hotel_ATTRIBUTES_URL = "http://betaerp.edawjar.in:8000/api/resource/Hotel Attribute";
-	private static final String PRODUCT_BUNDLE_ATTRIBUTE_URL = "http://betaerp.edawjar.in:8000/api/resource/Product Bundle Attribute";
-	private static final String PACKAGE_PRODUCT_ALTERNATIVES_URL = null;
-	private static final String LAND_PACKAGE_ATTRIBUTES_URL = "http://betaerp.edawjar.in:8000/api/resource/Land Package Attributes";
-	private static final String PRICE_LIST_URL = "http://betaerp.edawjar.in:8000/api/resource/Price List";
-	private static final String SIGHT_SEEING_ATTRIBUTE_URL = null;
-	private static final String ITEM_PRICE_LIST_URL = "http://betaerp.edawjar.in:8000/api/resource/Item Price";
-	private static final String REST_URI1 = "http://betaerp.edawjar.in:8000/api/method/login?usr=administrator&pwd=Strawberi@123";
 	
 	private Client client = ClientBuilder.newClient();
 	
